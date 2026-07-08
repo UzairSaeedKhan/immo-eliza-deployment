@@ -87,6 +87,8 @@ class FloodingAreaType(str, Enum):
     actual_flooding_area = "actual_flooding_area"
     low_risk = "low_risk"
 
+# Here the default values are set according to a usecase in case user doesn't enter the values.
+# We can also handle it by setting default values differently but currently we are assuming a customer usecase
 class PropertyInput(BaseModel):
     province: Province
     type_property: TypeProperty
@@ -97,16 +99,32 @@ class PropertyInput(BaseModel):
     epc_score: EpcScore
     flooding_area_type: FloodingAreaType
 
-    livable_surface: float
-    latitude: float
-    longitude: float
-    facades: int
-    bedrooms: float
-    construction_year: float
-    bathrooms: int
-    toilets: int
+    livable_surface: Optional[float] = Field(default=80, ge=0, le=1000)
+    latitude: Optional[float]
+    longitude: Optional[float]
+    facades: Optional[int] = Field(default=1, ge=0, le=6)
+    bedrooms: Optional[float] = Field(default=2, ge=0, le=15)
+    construction_year: Optional[float] = Field(default=2006, ge=1800, le=2026)
+    bathrooms: Optional[int] = Field(default=1, ge=0, le=15)
+    toilets: Optional[int] = Field(default=1, ge=0, le=15)
 
-    terrace: int = 0
-    garden: int = 0
-    garage: int = 0
-    swimming_pool: int = 0
+    terrace: Optional[int] = Field(default=1, ge=0, le=2)
+    garden: Optional[int] = Field(default=0, ge=0, le=3)
+    garage: Optional[int] = Field(default=1, ge=0, le=5)
+    swimming_pool: Optional[int] = Field(default=0)
+    # Other fields
+    postal_code: Optional[int] = Field(default=None, ge=1000, le=9999)
+    city: Optional[str] = None
+    furnished: Optional[bool] = None
+    floors: Optional[int] = Field(default=None, ge=0)
+    showers: Optional[int] = Field(default=None, ge=0)
+    veranda: Optional[bool] = None
+    elevator: Optional[bool] = None
+    access_for_disabled: Optional[bool] = None
+    cellar: Optional[bool] = None
+    distance_from_train_stations_by_foot: Optional[float] = Field(default=None, ge=0)
+    distance_from_train_stations_by_car: Optional[float] = Field(default=None, ge=0)
+    distance_from_motorway_by_car: Optional[float] = Field(default=None, ge=0)
+    distance_from_elementary_school_by_foot: Optional[float] = Field(default=None, ge=0)
+    distance_from_supermarket_by_foot: Optional[float] = Field(default=None, ge=0)
+    description: Optional[str] = None
