@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import ValidationError
 from schemas import PropertyInput
 from predict import predict
-from api.utils.logger import setup_logger
+from utils.utils import setup_logger
 
 logger = setup_logger(__name__)
 
