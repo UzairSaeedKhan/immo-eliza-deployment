@@ -5,14 +5,16 @@ from dotenv import load_dotenv
 from labels import (
     PROVINCE_OPTIONS, TYPE_PROPERTY_OPTIONS, SUBTYPE_PROPERTY_OPTIONS,
     SUN_EXPOSURE_LABELS, HEATING_TYPE_LABELS, STATE_OF_PROPERTY_LABELS,
-    EPC_SCORE_LABELS, FLOODING_AREA_LABELS,
-)
+    EPC_SCORE_LABELS, FLOODING_AREA_LABELS, CITY_OPTIONS
 
+)
 load_dotenv()
+
 try: # error handling so that st.secrets doesnt send any error if it doesnt find api_url
     API_URL = st.secrets["API_URL"]
 except (FileNotFoundError, KeyError):
     API_URL = os.getenv("API_URL", "http://localhost:8000/predict")
+
 
 st.title("Immo Eliza Price Predictor")
 
@@ -23,6 +25,11 @@ def label_select(label, options_dict):
 
 with st.form("property_form"):
     province = st.selectbox("Province", PROVINCE_OPTIONS)
+    selected_label = st.selectbox("City / Postal Code", sorted(CITY_OPTIONS.keys()))
+    selected_entry = CITY_OPTIONS[selected_label]
+    postal_code = int(selected_entry["zip"])
+    city = selected_entry["city"]
+
     type_property = st.selectbox("Property Type", TYPE_PROPERTY_OPTIONS)
     subtype_property = st.selectbox("Property Subtype", SUBTYPE_PROPERTY_OPTIONS)
 
@@ -51,6 +58,8 @@ with st.form("property_form"):
 if submitted:
     payload = {
         "province": province, "type_property": type_property,
+        "postal_code": postal_code,
+        "city": city,
         "subtype_property": subtype_property, "livable_surface": livable_surface,
         "latitude": latitude, "longitude": longitude, "facades": facades,
         "bedrooms": bedrooms, "bathrooms": bathrooms, "toilets": toilets,
