@@ -1,5 +1,18 @@
 # Here we have all the labels for our category columns
 
+import json
+from pathlib import Path
+
+POSTAL_DATA_PATH = Path(__file__).parent / "data" / "zipcode-belgium.json"
+
+with open(POSTAL_DATA_PATH, encoding="utf-8") as f:
+    _postal_data = json.load(f)
+
+CITY_OPTIONS = {
+    f"{entry['zip']} – {entry['city']}": entry
+    for entry in _postal_data
+}
+
 PROVINCE_OPTIONS = [
     "brussels", "vlaams_brabant", "antwerp", "east_flanders",
     "west_flanders", "brabant_wallon", "limburg", "hainaut",
