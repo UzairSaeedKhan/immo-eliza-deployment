@@ -1,0 +1,6 @@
+pandas==3.0.3
+joblib==1.5.3
+pydantic==2.13.4
+fastapi[standard]==0.139.0
+scikit-learn==1.9.0
+xgboost==3.3.0
