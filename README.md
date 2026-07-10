@@ -30,7 +30,7 @@
 
 ## 📌 Project Overview
 
-This project picks up where the [Immo Eliza ML pipeline](https://github.com/UzairSaeedKhan) left off. With a trained XGBoost regression model in hand, the goal here is to make it **usable in the real world** — by exposing it through a REST API for developers, and a clean, interactive web app for non-technical users and clients to get instant Belgian property price estimates.
+This project picks up where the [Immo Eliza ML pipeline](https://github.com/UzairSaeedKhan/immo-eliza-machine-learning) left off. With a trained XGBoost regression model in hand, the goal here is to make it **usable in the real world** — by exposing it through a REST API for developers, and a clean, interactive web app for non-technical users and clients to get instant Belgian property price estimates.
 
 ---
 
