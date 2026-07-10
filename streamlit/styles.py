@@ -4,6 +4,7 @@ from labels import (
     SUN_EXPOSURE_LABELS, HEATING_TYPE_LABELS, STATE_OF_PROPERTY_LABELS,
     EPC_SCORE_LABELS, FLOODING_AREA_LABELS, CITY_OPTIONS
 )
+import random
 
 def label_select(label, options_dict):
     """Show human-readable labels, return the underlying raw value."""
@@ -178,9 +179,10 @@ def get_custom_styles():
         }
         .fun-fact-text {
             color: #4A5568;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 1rem;
+            line-height: 1.6;
             margin: 0;
+            padding-top: 5px;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -290,35 +292,12 @@ def get_form():
         }
         return submitted, payload
 
-def get_fun_facts():
-    return st.markdown("""
+def get_fun_facts(fact_text):
+    return st.markdown(f"""
     <div class="fun-fact-card">
         <div class="fun-fact-title">💡 Did You Know? </div>
-        <p id="fact-text" class="fun-fact-text">Loading insights...</p>
+        <p class="fun-fact-text">{fact_text}</p>
     </div>
-
-    <script>
-        // Define your array of fun facts
-        const facts = [
-            "Brussels and Flemish Brabant consistently rank as the most expensive regions for property in Belgium. Conversely, you'll generally find the most budget-friendly prices in the beautiful, rural areas of Namur and Luxembourg.",
-            "Property value in Belgium is heavily influenced by energy performance. Homes with an 'A' or 'B' EPC score sell significantly faster and can fetch up to a 10-15% premium compared to similar energy-inefficient properties.",
-            "Historical charm comes at a price! Many Belgian cities feature protected facades or historic zoning regulations. While stunning, renovating a designated heritage property can introduce structural requirements that impact overall valuation."
-        ];
-
-        // Pick a totally random starting index
-        let currentIndex = Math.floor(Math.random() * facts.length);
-        
-        const factElement = document.getElementById('fact-text');
-        
-        // Set initial random fact immediately
-        factElement.innerText = facts[currentIndex];
-
-        // Set up a 10-second interval to gracefully swap facts
-        setInterval(() => {
-            currentIndex = (currentIndex + 1) % facts.length;
-            factElement.innerText = facts[currentIndex];
-        }, 10000); // 10000ms = 10 seconds
-    </script>
     """, unsafe_allow_html=True)
 
 def get_result_card(prediction_value):

@@ -1,6 +1,6 @@
-import os
 import requests
 import streamlit as st
+import random
 from dotenv import load_dotenv
 from styles import get_custom_styles, get_header_card, get_form, get_result_card, get_fun_facts
 
@@ -31,6 +31,16 @@ submitted, payload = get_form()
 # Handling Response and rendering custom Layout Output
 if submitted:
     
+    # 1. Define your array of premium real estate insights
+    facts = [
+        "Brussels and Flemish Brabant consistently rank as the most expensive regions for property in Belgium. Conversely, you'll generally find the most budget-friendly prices in the beautiful, rural areas of Namur and Luxembourg.",
+        "Property value in Belgium is heavily influenced by energy performance. Homes with an 'A' or 'B' EPC score sell significantly faster and can fetch up to a 10-15% premium compared to similar energy-inefficient properties.",
+        "Historical charm comes at a price! Many Belgian cities feature protected facades or historic zoning regulations. While stunning, renovating a designated heritage property can introduce structural requirements that impact overall valuation."
+    ]
+    
+    # Pick a random fact instantly using Python
+    selected_fact = random.choice(facts)
+    
     # Create a clean container for the loading state layout
     loading_container = st.empty()
     fact_container = st.empty()
@@ -39,9 +49,9 @@ if submitted:
     with loading_container:
         st.spinner("Crunching data and analyzing regional Belgian trends... Please wait.")
         
-    # Render fun facts while waiting for the result
+    # Pass the randomly selected fact straight into your style function
     with fact_container:
-        get_fun_facts()
+        get_fun_facts(selected_fact)
         
     try:
         # Trigger actual backend calculation
