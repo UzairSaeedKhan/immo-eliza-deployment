@@ -36,7 +36,7 @@ This project picks up where the [Immo Eliza ML pipeline](https://github.com/Uzai
 
 ## 🏗️ Architecture
 
-![Architecture Diagram](architecture.png)
+![Architecture Diagram](assets/architecture.png)
 
 The API and frontend are **fully separate, independently deployable services** that communicate over HTTP:
 
