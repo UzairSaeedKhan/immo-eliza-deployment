@@ -9,8 +9,8 @@
 
 > A full-stack deployment of the Immo Eliza price-prediction model — a FastAPI backend serving XGBoost predictions, and a Streamlit web app for non-technical users, deployed independently on Render and Streamlit Community Cloud.
 
-**🔗 Live App:** [immo-eliza-price-predictor-uzairsaeedkhan.streamlit.app](https://immo-eliza-price-predictor-uzairsaeedkhan.streamlit.app/)
-**🔗 Price Predictor API :** [**🔗 Live App:** [https://immo-eliza-deployment-mxa7.onrender.com/docs](https://immo-eliza-deployment-mxa7.onrender.com/docs)
+* **🔗 Live App:** [immo-eliza-price-predictor-uzairsaeedkhan.streamlit.app](https://immo-eliza-price-predictor-uzairsaeedkhan.streamlit.app/)
+* **🔗 Price Predictor API:** [immo-eliza-deployment-mxa7.onrender.com/docs](https://immo-eliza-deployment-mxa7.onrender.com/docs)
 
 ---
 
