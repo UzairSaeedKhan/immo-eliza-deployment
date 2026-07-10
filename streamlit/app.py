@@ -1,76 +1,70 @@
-import os
 import requests
 import streamlit as st
-from dotenv import load_dotenv
-from labels import (
-    PROVINCE_OPTIONS, TYPE_PROPERTY_OPTIONS, SUBTYPE_PROPERTY_OPTIONS,
-    SUN_EXPOSURE_LABELS, HEATING_TYPE_LABELS, STATE_OF_PROPERTY_LABELS,
-    EPC_SCORE_LABELS, FLOODING_AREA_LABELS, CITY_OPTIONS
-
-)
-load_dotenv()
+import random
+from styles import get_custom_styles, get_header_card, get_form, get_result_card, get_fun_facts
 
 try: # error handling so that st.secrets doesnt send any error if it doesnt find api_url
-    API_URL = st.secrets["API_URL"]
+    API_URL = st.secrets["API_URL"] 
 except (FileNotFoundError, KeyError):
-    API_URL = os.getenv("API_URL", "http://localhost:8000/predict")
+    API_URL = "http://localhost:8000"
+
+API_URL = API_URL + "/predict"
+
+st.set_page_config(layout="wide", page_title="Immo Eliza Price Predictor")
+
+# Inject Custom CSS for the Hero banner, Grids, and Result Card
+get_custom_styles()
+
+# Render the header section
+get_header_card()
+
+# Render Form Section
+submitted, payload = get_form()
 
 
-st.title("Immo Eliza Price Predictor")
-
-def label_select(label, options_dict):
-    """Show human-readable labels, return the underlying raw value."""
-    display = st.selectbox(label, list(options_dict.values()))
-    return next(k for k, v in options_dict.items() if v == display)
-
-with st.form("property_form"):
-    province = st.selectbox("Province", PROVINCE_OPTIONS)
-    selected_label = st.selectbox("City / Postal Code", sorted(CITY_OPTIONS.keys()))
-    selected_entry = CITY_OPTIONS[selected_label]
-    postal_code = int(selected_entry["zip"])
-    city = selected_entry["city"]
-
-    type_property = st.selectbox("Property Type", TYPE_PROPERTY_OPTIONS)
-    subtype_property = st.selectbox("Property Subtype", SUBTYPE_PROPERTY_OPTIONS)
-
-    livable_surface = st.number_input("Livable Surface (m²)", min_value=0.0)
-    latitude = st.number_input("Latitude", format="%.6f")
-    longitude = st.number_input("Longitude", format="%.6f")
-    facades = st.number_input("Facades", min_value=0, step=1)
-    bedrooms = st.number_input("Bedrooms", min_value=0.0, step=1.0)
-    bathrooms = st.number_input("Bathrooms", min_value=0, step=1)
-    toilets = st.number_input("Toilets", min_value=0, step=1)
-    construction_year = st.number_input("Construction Year", min_value=1800, max_value=2026, step=1)
-
-    heating_type = label_select("Heating Type", HEATING_TYPE_LABELS)
-    sun_exposure = label_select("Sun Exposure", SUN_EXPOSURE_LABELS)
-    state_of_property = label_select("State of Property", STATE_OF_PROPERTY_LABELS)
-    epc_score = label_select("EPC Score", EPC_SCORE_LABELS)
-    flooding_area_type = label_select("Flooding Area Type", FLOODING_AREA_LABELS)
-
-    terrace = st.checkbox("Terrace")
-    garden = st.checkbox("Garden")
-    garage = st.checkbox("Garage")
-    swimming_pool = st.checkbox("Swimming Pool")
-
-    submitted = st.form_submit_button("Predict Price")
-
+# Handling Response and rendering custom Layout Output
 if submitted:
-    payload = {
-        "province": province, "type_property": type_property,
-        "postal_code": postal_code,
-        "city": city,
-        "subtype_property": subtype_property, "livable_surface": livable_surface,
-        "latitude": latitude, "longitude": longitude, "facades": facades,
-        "bedrooms": bedrooms, "bathrooms": bathrooms, "toilets": toilets,
-        "construction_year": construction_year, "heating_type": heating_type,
-        "sun_exposure": sun_exposure, "state_of_property": state_of_property,
-        "epc_score": epc_score, "flooding_area_type": flooding_area_type,
-        "terrace": int(terrace), "garden": int(garden),
-        "garage": int(garage), "swimming_pool": int(swimming_pool),
-    }
-    response = requests.post(API_URL, json=payload)
-    if response.status_code == 200:
-        st.success(f"Estimated price: €{response.json()['prediction']:,.2f}")
-    else:
-        st.error(f"Error: {response.json().get('detail')}")
+    
+    # Hardcoded facts
+    facts = [
+        "Brussels and Flemish Brabant consistently rank as the most expensive regions for property in Belgium. Conversely, you'll generally find the most budget-friendly prices in the beautiful, rural areas of Namur and Luxembourg.",
+        "Property value in Belgium is heavily influenced by energy performance. Homes with an 'A' or 'B' EPC score sell significantly faster and can fetch up to a 10-15% premium compared to similar energy-inefficient properties.",
+        "Historical charm comes at a price! Many Belgian cities feature protected facades or historic zoning regulations. While stunning, renovating a designated heritage property can introduce structural requirements that impact overall valuation."
+    ]
+    
+    # Pick a random fact
+    selected_fact = random.choice(facts)
+    
+    # Create a clean container for the loading state layout
+    loading_container = st.empty()
+    fact_container = st.empty()
+    
+    # Display the loading spinner and the fun fact card side-by-side or stacked
+    with loading_container:
+        st.spinner("Crunching data and analyzing regional Belgian trends... Please wait.")
+        
+    # Pass the randomly selected fact straight into your style function
+    with fact_container:
+        get_fun_facts(selected_fact)
+        
+    try:
+        # Trigger actual backend calculation
+        response = requests.post(API_URL, json=payload)
+        
+        # Clear loading placeholders once data returns safely
+        loading_container.empty()
+        fact_container.empty()
+        
+        if response.status_code == 200:
+            prediction_value = response.json()['prediction']
+            
+            # Render result card
+            get_result_card(prediction_value)
+            
+        else:
+            st.error(f"Error: {response.json().get('detail')}")
+            
+    except Exception as e:
+        loading_container.empty()
+        fact_container.empty()
+        st.error(f"Could not connect to backend API: {e}")

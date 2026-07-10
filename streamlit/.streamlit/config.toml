@@ -1,0 +1,3 @@
+[theme]
+# Forces the app to ignore system preferences and stick to Light Mode
+base = "light"
